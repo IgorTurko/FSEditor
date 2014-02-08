@@ -1,48 +1,98 @@
 ﻿// Creates knockout model for FSEditorInstance
 function FSEditorViewModel(fsEditor) {
     ThrowIf.nullOrUndefined(fsEditor);
+    var self = this;
+    self.Editor = fsEditor;
+    self.Models = new this.ModelCache(fsEditor);
+    self.Directions = ko.observableArray(fsEditor.Directions);
 
-    this.Editor = fsEditor;
-
-    var fareStages = [];
     var modelCache = {};
-    for (var i = 0; i < fsEditor.Service.length; i++) {
-        var current = fsEditor.Service[i];
-        var model = modelCache[current.Id];
+    self.FareStages = ko.observableArray(ko.utils.arrayMap(fsEditor.Service, function (fareStage) {
+        var model = modelCache[fareStage.Id];
         if (!model) {
-            var fareStageEntity = fsEditor.findFareStage(current.Id);
-            model = new this.FareStageViewModel(current, fareStageEntity, this);
-            modelCache[current.Id] = model;
+            model = new self.FareStageViewModel(fareStage, self);
+            modelCache[fareStage.Id] = model;
         }
-        fareStages.push(model);
-    }
-    this.FareStages = ko.observableArray(fareStages);
+        return model;
+    }));
 
+    self.removeFareStageAt = function (index) {
+        index = index();
+        ThrowIf.nullOrUndefined(index);
 
+        self.Editor.removeFareStageAt(index);
+        var underlyingArray = self.FareStages();
+        underlyingArray.splice(index, 1);
+        self.FareStages(underlyingArray);
+
+        return false;
+    };
 };
 
-FSEditorViewModel.prototype.FareStageViewModel = function (fareStageLink, fareStageEntity, editorViewModel) {
-    this.Id = fareStageEntity.Id;
-    this.Title = fareStageEntity.Title;
-    this.Tags = fareStageEntity.Tags;
+// Model cache
+(function() {
+    FSEditorViewModel.prototype.ModelCache = function(fsEditor) {
+        this.FareStages = ko.utils.arrayMap(fsEditor.FareStageList, function(elem) {
+            return {
+                Id: elem.Id,
+                Title: ko.observable(elem.Title),
+                Tags: ko.observableArray(elem.Tags)
+            };
+        });
 
-    var busStops = [];
+        this.BusStops = ko.utils.arrayMap(fsEditor.BusStopList, function(elem) {
+            return {
+                Id: elem.Id,
+                Title: ko.observable(elem.Title)
+            };
+        });
+
+        var modelCache = {};
+        this.FareStageStops = ko.observableArray(
+            ko.utils.arrayGetDistinctValues(
+                ko.utils.arrayMap(fsEditor.Service, function(fareStage) {
+                    var model = modelCache[fareStage.Id];
+                    if (!model) {
+                        model = new self.FareStageViewModel(fareStage, self);
+                        modelCache[fareStage.Id] = model;
+                    }
+                    return model;
+                })));
+    };
+
+    FSEditorViewModel.prototype.ModelCache.prototype.findFareStageModel = function(fareStageId) {
+        return ko.utils.arrayFirst(this.FareStages, function(elem) { return elem.Id === fareStageId; });
+    };
+
+    FSEditorViewModel.prototype.ModelCache.prototype.findBusStopModel = function(busStopId) {
+        return ko.utils.arrayFirst(this.BusStops, function(elem) { return elem.Id === busStopId; });
+    };
+
+    FSEditorViewModel.prototype.ModelCache.prototype.findFareStageStopModel = function(fareStageId) {
+        return ko.utils.arrayFirst(this.FareStageStops, function(elem) { return elem.Id === fareStageId; });
+    };
+
+})();
+
+FSEditorViewModel.prototype.FareStageViewModel = function (fareStage, fsEditor) {
+    ThrowIf.nullOrUndefined(fareStage);
+
+    var self = this;
+    var entityModel = fsEditor.Models.findFareStageModel(fareStage.Id);
+    self.Model = entityModel;
+
     var modelCache = {};
-    for (var i = 0; i < fareStageLink.Stops.length; i++) {
-        var current = fareStageLink.Stops[i];
-        var model = modelCache[current.Id];
+    self.Stops = ko.observableArray(ko.utils.arrayMap(fareStage.Stops, function (busStop) {
+        var model = modelCache[busStop.Id];
         if (!model) {
-            var busStopEntity = editorViewModel.Editor.findBusStop(current.Id);
-            model = new editorViewModel.BusStopViewModel(current, busStopEntity, this, editorViewModel);
-            modelCache[current.Id] = model;
+            model = new fsEditor.BusStopViewModel(busStop, self, fsEditor);
+            modelCache[busStop.Id] = model;
         }
-        busStops.push(model);
-    }
-    this.Stops = ko.observableArray(busStops);
+        return model;
+    }));
 };
 
-FSEditorViewModel.prototype.BusStopViewModel = function(busStopLink, busStopEntity, fareStageViewModel, editorViewModel) {
-    this.Id = busStopEntity.Id;
-    this.Title = busStopEntity.Title;
-    this.Direction = ko.observable(busStopLink.Direction);
+FSEditorViewModel.prototype.BusStopViewModel = function (busStop, fareStage, fsEditor) {
+    this.Model = fsEditor.Entities.findBusStop(busStop.Id);
+    this.Direction = ko.observable(busStop.Direction);
 };

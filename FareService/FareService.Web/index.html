@@ -11,25 +11,28 @@
 
     <script type="text/javascript" src="content/js/FSEditor.sample-data.js"></script>
 </head>
-    <body>
-        <div id="fs-editor-root">
-            <ul data-bind="foreach: FareStages">
-                <li>
-                    <span data-bind="text: Id"></span>:<span data-bind="text: Title"></span>
-                    <ul data-bind="foreach: Stops">
-                        <li>
-                            <span data-bind="text: Id"></span>: <span data-bind="text: Title"></span>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                var fsEditor = CreateSampleFSEditor();
-                var model = new FSEditorViewModel(fsEditor);
-                ko.applyBindings(model, document.getElementById("fs-editor-root"));
-            });
-        </script>
-    </body>
+<body>
+    <div id="fs-editor-root">
+        <ul data-bind="foreach: FareStages">
+            <li>
+                <a href="#" data-bind="click: $root.removeFareStageAt($index)">del</a>
+                <span data-bind="text: Model.Id"></span>: <input type="text" data-bind="value: Model.Title" />
+                <ul data-bind="foreach: Stops">
+                    <li>
+                        <span data-bind="text: Model.Id"></span>:
+                        <input type="text" data-bind="value: Model.Title" />
+                        (<select data-bind="value: Direction, options: $root.Directions"></select>)
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            var fsEditor = CreateSampleFSEditor();
+            var model = new FSEditorViewModel(fsEditor);
+            ko.applyBindings(model, document.getElementById("fs-editor-root"));
+        });
+    </script>
+</body>
 </html>
