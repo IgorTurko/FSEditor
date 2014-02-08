@@ -63,7 +63,8 @@
     <Content Include="content-test-suite\components\jasmine\jasmine.css" />
     <Content Include="content-test-suite\components\jasmine\jasmine.js" />
     <Content Include="content-test-suite\components\jasmine\jasmine_favicon.png" />
-    <Content Include="content-test-suite\js\FSEditor-test-suite.js" />
+    <Content Include="content-test-suite\js\FSEditor.test-suite.BusStop.js" />
+    <Content Include="content-test-suite\js\FSEditor.test-suite.common.js" />
     <Content Include="content-test-suite\js\FSEditor-test-data.js" />
     <Content Include="content\components\jquery\jquery-1.7.1.js" />
     <Content Include="content\components\knockoutjs\knockoutjs-3.0.0.js" />
@@ -78,6 +79,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="content-test-suite\js\FSEditor.test-suite.FareStage.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

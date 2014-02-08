@@ -25,7 +25,6 @@ function BusStopModel(busStopEntity) {
 
 FSEditor.prototype.Directions = ["Inbound", "Outbound", "Inbound and Outbound"];
 
-/// Finds fare stage with specified id.
 FSEditor.prototype.findFareStage = function (fareStageId) {
     ThrowIf.nullOrUndefined(fareStageId, "Specified fare stage is not valid.");
 
@@ -49,7 +48,7 @@ FSEditor.prototype.findBusStop = function (busStopId) {
     throw "Bus Stop with Id=" + busStopId + " is not found.";
 };
 
-/// Adds fare stage with specified id at the end of fare stage collection.
+// Adds fare stage with specified id at the end of fare stage collection.
 FSEditor.prototype.addFareStage = function (fareStageId) {
     ThrowIf.nullOrUndefined(fareStageId, "fareStageId is not valid.");
 
@@ -73,6 +72,22 @@ FSEditor.prototype.removeFareStageAt = function (index) {
 
     this.Service.splice(index, 1);
 };
+
+// Returns true if fare stage at specified index could be moved one position up.
+FSEditor.prototype.canMoveFareStageUp = function(fareStageIndex) {
+    ThrowIf.invalidArrayIndex(this.Service, fareStageIndex, "Fare Stage index is not valid.");
+    return fareStageIndex > 0;
+};
+
+// Moves fare stage at specified index to one position up.
+FSEditor.prototype.moveFareStageUp = function (fareStageIndex) {
+    ThrowIf.false(this.canMoveFareStageUp(fareStageIndex), "Fare stage can't be moved.");
+
+    var elemToMove = this.Service[fareStageIndex];
+    this.Service.splice(fareStageIndex, 1);
+    this.Service.splice(fareStageIndex - 1, 0, elemToMove);
+};
+
 
 // Adds Bus Stop at the end of stops of Fare Stage at specified index.
 FSEditor.prototype.addBusStopToFareStageAt = function (fareStageIndex, busStopId) {
