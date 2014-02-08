@@ -82,9 +82,69 @@ describe("Moving Up Fare Stage must", function() {
     });
 
     it("works correctly", function() {
-        fs.moveFareStageUp(2);
+        fs.moveFareStageUp(1);
         expect(fs.Service.length).toBe(2);
         expect(fs.Service[0].Id).toBe(second.Id);
         expect(fs.Service[1].Id).toBe(first.Id);
+    });
+
+    it("fail on zero index", function () {
+        expect(function() {
+            fs.moveFareStageUp(0);
+        }).toThrow();
+    });
+
+    it("fail on too large index", function () {
+        expect(function () {
+            fs.moveFareStageUp(2);
+        }).toThrow();
+    });
+
+    it("fail on single Fare Stage", function () {
+        expect(function () {
+            fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+            fs.addFareStage(first.Id);
+            fs.moveFareStageUp(0);
+        }).toThrow();
+    });
+});
+
+describe("Moving Down Fare Stage must", function () {
+    var tdgen = FSTestData.generalSuite;
+    var fs;
+    var first = tdgen.fareStageList[0];
+    var second = tdgen.fareStageList[1];
+
+    beforeEach(function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+        fs.addFareStage(first.Id);
+        fs.addFareStage(second.Id);
+    });
+
+    it("works correctly", function () {
+        fs.moveFareStageDown(0);
+        expect(fs.Service.length).toBe(2);
+        expect(fs.Service[0].Id).toBe(second.Id);
+        expect(fs.Service[1].Id).toBe(first.Id);
+    });
+
+    it("fail on highes index", function () {
+        expect(function () {
+            fs.moveFareStageDown(1);
+        }).toThrow();
+    });
+
+    it("fail on too large index", function () {
+        expect(function () {
+            fs.moveFareStageDown(2);
+        }).toThrow();
+    });
+
+    it("fail on single Fare Stage", function () {
+        expect(function () {
+            fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+            fs.addFareStage(first.Id);
+            fs.moveFareStageDown(0);
+        }).toThrow();
     });
 });

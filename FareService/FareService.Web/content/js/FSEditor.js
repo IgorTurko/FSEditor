@@ -88,6 +88,21 @@ FSEditor.prototype.moveFareStageUp = function (fareStageIndex) {
     this.Service.splice(fareStageIndex - 1, 0, elemToMove);
 };
 
+// Returns true if fare stage at specified index could be moved one position down.
+FSEditor.prototype.canMoveFareStageDown = function (fareStageIndex) {
+    ThrowIf.invalidArrayIndex(this.Service, fareStageIndex, "Fare Stage index is not valid.");
+    return this.Service.length > 1 && fareStageIndex < this.Service.length - 1;
+};
+
+// Moves fare stage at specified index to one position down.
+FSEditor.prototype.moveFareStageDown = function (fareStageIndex) {
+    ThrowIf.false(this.canMoveFareStageDown(fareStageIndex), "Fare stage can't be moved.");
+
+    var elemToMove = this.Service[fareStageIndex];
+    this.Service.splice(fareStageIndex, 1);
+    this.Service.splice(fareStageIndex + 1, 0, elemToMove);
+};
+
 
 // Adds Bus Stop at the end of stops of Fare Stage at specified index.
 FSEditor.prototype.addBusStopToFareStageAt = function (fareStageIndex, busStopId) {
