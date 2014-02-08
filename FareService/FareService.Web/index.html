@@ -7,20 +7,19 @@
 
     <script type="text/javascript" src="content/js/utils.js"></script>
     <script type="text/javascript" src="content/js/FSEditor.js"></script>
-    <script type="text/javascript" src="content/js/FSEditor.knockout.js"></script>
 
     <script type="text/javascript" src="content/js/FSEditor.sample-data.js"></script>
 </head>
 <body>
     <div id="fs-editor-root">
-        <ul data-bind="foreach: FareStages">
+        <ul data-bind="foreach: Service">
             <li>
-                <a href="#" data-bind="click: $root.removeFareStageAt($index)">del</a>
-                <span data-bind="text: Model.Id"></span>: <input type="text" data-bind="value: Model.Title" />
+                <!--<a href="#" data-bind="click: $root.removeFareStageAt($index)">del</a>-->
+                <span data-bind="text: FareStage.Id"></span>: <input type="text" data-bind="value: FareStage.Title" />
                 <ul data-bind="foreach: Stops">
                     <li>
-                        <span data-bind="text: Model.Id"></span>:
-                        <input type="text" data-bind="value: Model.Title" />
+                        <span data-bind="text: BusStop.Id"></span>:
+                        <input type="text" data-bind="value: BusStop.Title" />
                         (<select data-bind="value: Direction, options: $root.Directions"></select>)
                     </li>
                 </ul>
@@ -30,8 +29,7 @@
     <script type="text/javascript">
         $(function () {
             var fsEditor = CreateSampleFSEditor();
-            var model = new FSEditorViewModel(fsEditor);
-            ko.applyBindings(model, document.getElementById("fs-editor-root"));
+            ko.applyBindings(fsEditor, document.getElementById("fs-editor-root"));
         });
     </script>
 </body>

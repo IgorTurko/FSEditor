@@ -44,7 +44,7 @@ describe("FSEditor method findFareStage must", function () {
         var expected = tdgen.fareStageList[0];
 
         var actual = fs.findFareStage(expected.Id);
-        expect(actual).toBe(expected);
+        expect(actual.Id).toBe(expected.Id);
     });
 
     it("throw exception for non-existing fareStageId", function () {
@@ -72,7 +72,7 @@ describe("FSEditor method findBusStop must", function () {
         var expected = tdgen.busStopList[0];
 
         var actual = fs.findBusStop(expected.Id);
-        expect(actual).toBe(expected);
+        expect(actual.Id).toBe(expected.Id);
     });
 
     it("throw exception for non-existing busStopId", function () {
