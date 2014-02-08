@@ -68,7 +68,9 @@
     <Content Include="content-test-suite\js\FSEditor-test-data.js" />
     <Content Include="content\components\jquery\jquery-1.7.1.js" />
     <Content Include="content\components\knockoutjs\knockoutjs-3.0.0.js" />
+    <Content Include="content\js\FSEditor.sample-data.js" />
     <Content Include="content\js\FSEditor.js" />
+    <Content Include="content\js\FSEditor.knockout.js" />
     <Content Include="content\js\utils.js" />
     <Content Include="index.html" />
     <Content Include="Readme.txt" />

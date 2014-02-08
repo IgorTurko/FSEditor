@@ -5,8 +5,31 @@
     <script type="text/javascript" src="content/components/jquery/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="content/components/knockoutjs/knockoutjs-3.0.0.js"></script>
 
+    <script type="text/javascript" src="content/js/utils.js"></script>
+    <script type="text/javascript" src="content/js/FSEditor.js"></script>
+    <script type="text/javascript" src="content/js/FSEditor.knockout.js"></script>
+
+    <script type="text/javascript" src="content/js/FSEditor.sample-data.js"></script>
 </head>
-<body>
-    Hello Fare Service
-</body>
+    <body>
+        <div id="fs-editor-root">
+            <ul data-bind="foreach: FareStages">
+                <li>
+                    <span data-bind="text: Id"></span>:<span data-bind="text: Title"></span>
+                    <ul data-bind="foreach: Stops">
+                        <li>
+                            <span data-bind="text: Id"></span>: <span data-bind="text: Title"></span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                var fsEditor = CreateSampleFSEditor();
+                var model = new FSEditorViewModel(fsEditor);
+                ko.applyBindings(model, document.getElementById("fs-editor-root"));
+            });
+        </script>
+    </body>
 </html>
