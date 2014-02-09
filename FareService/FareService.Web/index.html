@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Fare Service Editor</title>
+    <link rel="stylesheet" href="/content/css/site.css"/>
+
     <script type="text/javascript" src="content/components/jquery/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="content/components/knockoutjs/knockoutjs-3.0.0.js"></script>
 
@@ -13,17 +15,17 @@
 <body>
     <div id="fs-editor-root">
         <ul data-bind="foreach: Service">
-            <li>
+            <li data-bind="css: { 'active-fare-stage-ref': IsActive(), 'active-fare-stage': $index() == $root.ActiveFareStageIndex() }, click: function () { $root.setActiveFareStage($index()) }">
                 <a href="#" data-bind="click: function () { $root.removeFareStageAt($index()); }">del</a>
-                <a href="#" data-bind="visible: $root.canMoveFareStageUp($index()), click: function () {$root.moveFareStageUp($index()); }">UP</a>
-                <a href="#" data-bind="visible: $root.canMoveFareStageDown($index()), click: function () {$root.moveFareStageDown($index()); }">DOWN</a>
+                <a href="#" data-bind="visible: $root.canMoveFareStageUp($index()), click: function () {$root.moveFareStageUp($index()); }">↑</a>
+                <a href="#" data-bind="visible: $root.canMoveFareStageDown($index()), click: function () {$root.moveFareStageDown($index()); }">↓</a>
                 <input type="text" data-bind="value: FareStage.Title" />
                 <ul data-bind="foreach: Stops">
                     <li>
-                        <a href="#" data-bind="click: function () { $root.removeBusStopFromFareStageAt($parentContext.$index(), $index()); }">XX</a>
+                        <a href="#" data-bind="click: function () { $root.removeBusStopFromFareStageAt($parentContext.$index(), $index()); }">del</a>
                         <input type="text" data-bind="value: BusStop.Title" />
-                        <a href="#" data-bind="visible: $root.canMoveBusStopUp($parentContext.$index(),$index()), click: function () {$root.moveBusStopUp($parentContext.$index(), $index()); }">UP</a>
-                        <a href="#" data-bind="visible: $root.canMoveBusStopDown($parentContext.$index(),$index()), click: function () {$root.moveBusStopDown($parentContext.$index(), $index()); }">DOWN</a>
+                        <a href="#" data-bind="visible: $root.canMoveBusStopUp($parentContext.$index(),$index()), click: function () {$root.moveBusStopUp($parentContext.$index(), $index()); }">↑</a>
+                        <a href="#" data-bind="visible: $root.canMoveBusStopDown($parentContext.$index(),$index()), click: function () {$root.moveBusStopDown($parentContext.$index(), $index()); }">↓</a>
                         (<select data-bind="value: Direction, options: $root.Directions"></select>)
                     </li>
                 </ul>

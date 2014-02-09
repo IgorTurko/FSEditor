@@ -68,6 +68,7 @@
     <Content Include="content-test-suite\js\FSEditor-test-data.js" />
     <Content Include="content\components\jquery\jquery-1.7.1.js" />
     <Content Include="content\components\knockoutjs\knockoutjs-3.0.0.js" />
+    <Content Include="content\css\site.css" />
     <Content Include="content\js\FSEditor.sample-data.js" />
     <Content Include="content\js\FSEditor.js" />
     <Content Include="content\js\utils.js" />
@@ -88,9 +89,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="content\css\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -1,0 +1,9 @@
+﻿a[href='#'] {
+    text-decoration: none;
+}
+.active-fare-stage-ref {
+    background: #f6f6f6;
+}
+.active-fare-stage.active-fare-stage-ref {
+    background: #cecece;
+}

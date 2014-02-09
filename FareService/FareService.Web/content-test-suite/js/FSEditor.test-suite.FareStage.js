@@ -19,6 +19,8 @@
 
         var fareStageToAdd = tdgen.fareStageList[0];
         fs.addFareStage(fareStageToAdd.Id);
+        fs.addBusStopToFareStageAt(0, tdgen.busStopList[1].Id);
+
         fs.addFareStage(fareStageToAdd.Id);
 
         expect(fs.Service().length).toBe(prevLength + 2);
@@ -29,7 +31,8 @@
         expect(actualFareStage2).toBeDefined();
 
         expect(actualFareStage.Id).toBe(fareStageToAdd.Id);
-        expect(actualFareStage.Stops()).toEqual([]);
+        expect(actualFareStage.Stops().length).toEqual(1);
+        expect(actualFareStage2.Stops().length).toEqual(1);
 
         expect(actualFareStage).toBe(actualFareStage2);
     });
@@ -146,5 +149,56 @@ describe("Moving Down Fare Stage must", function () {
             fs.addFareStage(first.Id);
             fs.moveFareStageDown(0);
         }).toThrow();
+    });
+});
+
+describe("Fare stage activation must", function() {
+    var tdgen = FSTestData.generalSuite;
+    var fs;
+    var first = tdgen.fareStageList[0];
+    var second = tdgen.fareStageList[1];
+
+    beforeEach(function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+    });
+
+    it("be performed on adding first fare stage", function() {
+        fs.addFareStage(first.Id);
+        expect(fs.Service().length).toBe(1);
+        expect(fs.Service()[0].IsActive()).toBe(true);
+        expect(fs.ActiveFareStageIndex()).toBe(0);
+
+
+        //fs.addFareStage(second.Id);
+        //expect(fs.Service()[0].IsActive()).toBe(true);
+        //expect(fs.ActiveFareStageIndex()).toBe(0);
+        //expect(fs.Service()[1].IsActive()).toBe(false);
+    });
+
+    it("not be reset on adding fare stages", function() {
+        fs.addFareStage(first.Id);
+        fs.addFareStage(second.Id);
+        fs.addFareStage(first.Id);
+
+        expect(fs.ActiveFareStageIndex()).toBe(0);
+    });
+
+    it("works correctly", function () {
+        fs.addFareStage(first.Id);
+        fs.addFareStage(second.Id);
+        fs.addFareStage(first.Id);
+
+        fs.setActiveFareStage(2);
+        expect(fs.ActiveFareStageIndex()).toBe(2);
+    });
+
+    it("activate all references of fare stage", function () {
+        fs.addFareStage(first.Id);
+        fs.addFareStage(second.Id);
+        fs.addFareStage(first.Id);
+
+        fs.setActiveFareStage(2);
+        expect(fs.Service()[0].IsActive()).toBe(true);
+        expect(fs.Service()[2].IsActive()).toBe(true);
     });
 });

@@ -18,6 +18,7 @@ function FSEditor(fareStageList, busStopList) {
     }));
 
     this.Service = ko.observableArray([]);
+    this.ActiveFareStageIndex = ko.observable(null);
 };
 
 // Constructors and internal methods.
@@ -27,6 +28,7 @@ function FSEditor(fareStageList, busStopList) {
         this.FareStage = fareStageEntity;
         this.Id = fareStageEntity.Id;
         this.Stops = ko.observableArray([]);
+        this.IsActive = ko.observable(false);
     };
 
     FSEditor.prototype.BusStopModel = function (busStopEntity) {
@@ -81,8 +83,10 @@ function FSEditor(fareStageList, busStopList) {
                 break;
             }
         }
-
+        
         this.Service.push(model);
+        if (this.Service().length == 1)
+            this.setActiveFareStage(0);
     };
 
     // Removes fare stage at specified position.
@@ -120,6 +124,13 @@ function FSEditor(fareStageList, busStopList) {
         var elemToMove = this.Service()[fareStageIndex];
         this.Service.splice(fareStageIndex, 1);
         this.Service.splice(fareStageIndex + 1, 0, elemToMove);
+    };
+
+    FSEditor.prototype.setActiveFareStage = function (fareStageIndex) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare stage index is not valid.");
+        ko.utils.arrayForEach(this.Service(), function (elem) { elem.IsActive(false); });
+        this.Service()[fareStageIndex].IsActive(true);
+        this.ActiveFareStageIndex(fareStageIndex);
     };
 })();
 
@@ -180,7 +191,7 @@ function FSEditor(fareStageList, busStopList) {
         fareStage.Stops.splice(busStopIndex - 1, 0, elemToMove);
     };
 
-    FSEditor.prototype.moveBusStopDown = function(fareStageIndex, busStopIndex) {
+    FSEditor.prototype.moveBusStopDown = function (fareStageIndex, busStopIndex) {
         ThrowIf.false(this.canMoveBusStopDown(fareStageIndex, busStopIndex));
 
         var fareStage = this.Service()[fareStageIndex];
