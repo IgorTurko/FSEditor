@@ -14,11 +14,13 @@
     <div id="fs-editor-root">
         <ul data-bind="foreach: Service">
             <li>
-                <!--<a href="#" data-bind="click: $root.removeFareStageAt($index)">del</a>-->
-                <span data-bind="text: FareStage.Id"></span>: <input type="text" data-bind="value: FareStage.Title" />
+                <a href="#" data-bind="click: function () { $root.removeFareStageAt($index()); }">del</a>
+                <a href="#" data-bind="visible: $root.canMoveFareStageUp($index()), click: function () {$root.moveFareStageUp($index()); }">UP</a>
+                <a href="#" data-bind="visible: $root.canMoveFareStageDown($index()), click: function () {$root.moveFareStageDown($index()); }">DOWN</a>
+                <input type="text" data-bind="value: FareStage.Title" />
                 <ul data-bind="foreach: Stops">
                     <li>
-                        <span data-bind="text: BusStop.Id"></span>:
+                        <a href="#" data-bind="click: function () { $root.removeBusStopFromFareStageAt($parentContext.$index(), $index()); }">XX</a>
                         <input type="text" data-bind="value: BusStop.Title" />
                         (<select data-bind="value: Direction, options: $root.Directions"></select>)
                     </li>
