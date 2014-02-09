@@ -20,16 +20,16 @@ function FSEditor(fareStageList, busStopList) {
     this.Service = ko.observableArray([]);
 };
 
+// Constructors and internal methods.
 (function () {
-
-    function FareStageModel(fareStageEntity) {
+    FSEditor.prototype.FareStageModel = function (fareStageEntity) {
         ThrowIf.nullOrUndefined(fareStageEntity, "Specified fare stage is not valid.");
         this.FareStage = fareStageEntity;
         this.Id = fareStageEntity.Id;
         this.Stops = ko.observableArray([]);
     };
 
-    function BusStopModel(busStopEntity) {
+    FSEditor.prototype.BusStopModel = function (busStopEntity) {
         ThrowIf.nullOrUndefined(busStopEntity, "Specified bus stop is not valid.");
 
         this.BusStop = busStopEntity;
@@ -62,12 +62,16 @@ function FSEditor(fareStageList, busStopList) {
         throw "Bus Stop with Id=" + busStopId + " is not found.";
     };
 
+})();
+
+// Fare stage methods
+(function () {
     // Adds fare stage with specified id at the end of fare stage collection.
     FSEditor.prototype.addFareStage = function (fareStageId) {
         ThrowIf.nullOrUndefined(fareStageId, "fareStageId is not valid.");
 
         var fareStage = this.findFareStage(fareStageId);
-        var model = new FareStageModel(fareStage);
+        var model = new this.FareStageModel(fareStage);
 
         var list = this.Service();
         for (var i = 0; i < list.length; i++) {
@@ -117,15 +121,17 @@ function FSEditor(fareStageList, busStopList) {
         this.Service.splice(fareStageIndex, 1);
         this.Service.splice(fareStageIndex + 1, 0, elemToMove);
     };
+})();
 
-
+// Bus stop methods
+(function () {
     // Adds Bus Stop at the end of stops of Fare Stage at specified index.
     FSEditor.prototype.addBusStopToFareStageAt = function (fareStageIndex, busStopId) {
         ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare Stage index is out of range or undefined");
 
         var fareStage = this.Service()[fareStageIndex];
         var busStop = this.findBusStop(busStopId);
-        var busStopModel = new BusStopModel(busStop);
+        var busStopModel = new this.BusStopModel(busStop);
 
         var list = fareStage.Stops();
         for (var i = 0; i < list.length; i++) {
@@ -135,7 +141,6 @@ function FSEditor(fareStageList, busStopList) {
                 break;
             }
         }
-
         fareStage.Stops.push(busStopModel);
     };
 
@@ -150,4 +155,37 @@ function FSEditor(fareStageList, busStopList) {
         fareStage.Stops.splice(busStopIndex, 1);
     };
 
+    FSEditor.prototype.canMoveBusStopUp = function (fareStageIndex, busStopIndex) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare Stage index is not valid.");
+        var fareStage = this.Service()[fareStageIndex];
+        ThrowIf.invalidArrayIndex(fareStage.Stops(), busStopIndex, "Bus Stop index is not valid.");
+        return busStopIndex > 0;
+    };
+
+    FSEditor.prototype.canMoveBusStopDown = function (fareStageIndex, busStopIndex) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare Stage index is not valid.");
+        var fareStage = this.Service()[fareStageIndex];
+        ThrowIf.invalidArrayIndex(fareStage.Stops(), busStopIndex, "Bus Stop index is not valid.");
+        return fareStage.Stops().length > 1 && busStopIndex < fareStage.Stops().length - 1;
+    };
+
+    FSEditor.prototype.moveBusStopUp = function (fareStageIndex, busStopIndex) {
+        ThrowIf.false(this.canMoveBusStopUp(fareStageIndex, busStopIndex), "Bus stop cannot be moved up.");
+
+        var fareStage = this.Service()[fareStageIndex];
+
+        var elemToMove = fareStage.Stops()[busStopIndex];
+
+        fareStage.Stops.splice(busStopIndex, 1);
+        fareStage.Stops.splice(busStopIndex - 1, 0, elemToMove);
+    };
+
+    FSEditor.prototype.moveBusStopDown = function(fareStageIndex, busStopIndex) {
+        ThrowIf.false(this.canMoveBusStopDown(fareStageIndex, busStopIndex));
+
+        var fareStage = this.Service()[fareStageIndex];
+        var elemToMove = fareStage.Stops()[busStopIndex];
+        fareStage.Stops.splice(busStopIndex, 1);
+        fareStage.Stops.splice(busStopIndex + 1, 0, elemToMove);
+    };
 })();

@@ -101,3 +101,73 @@ describe("Removing Bus Stop from Fare Stage must", function () {
         }).toThrow();
     });
 });
+
+describe("Moving Bus Stop Up must", function () {
+    var tdgen = FSTestData.generalSuite;
+    var fs;
+    var firstStop = tdgen.busStopList[0];
+    var secondStop = tdgen.busStopList[1];
+
+    beforeEach(function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addBusStopToFareStageAt(0, firstStop.Id);
+        fs.addBusStopToFareStageAt(0, secondStop.Id);
+    });
+
+    it("works correctly", function () {
+        var stage = fs.Service()[0];
+        fs.moveBusStopUp(0, 1);
+        expect(stage.Stops().length).toBe(2);
+        expect(stage.Stops()[0].Id).toBe(secondStop.Id);
+        expect(stage.Stops()[1].Id).toBe(firstStop.Id);
+    });
+
+    it("fail on zero index", function() {
+        expect(function() {
+            fs.moveBusStopUp(0, 0);
+        }).toThrow();
+    });
+
+    it("fail on out of upper range index", function () {
+        expect(function () {
+            fs.moveBusStopUp(0, 2);
+        }).toThrow();
+    });
+});
+
+describe("Moving Bus Stop Down must", function () {
+    var tdgen = FSTestData.generalSuite;
+    var fs;
+    var firstStop = tdgen.busStopList[0];
+    var secondStop = tdgen.busStopList[1];
+
+    beforeEach(function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addBusStopToFareStageAt(0, firstStop.Id);
+        fs.addBusStopToFareStageAt(0, secondStop.Id);
+    });
+
+    it("works correctly", function () {
+        var stage = fs.Service()[0];
+        fs.moveBusStopDown(0, 0);
+        expect(stage.Stops().length).toBe(2);
+        expect(stage.Stops()[0].Id).toBe(secondStop.Id);
+        expect(stage.Stops()[1].Id).toBe(firstStop.Id);
+    });
+
+    it("fail on last index", function () {
+        expect(function () {
+            fs.moveBusStopDown(0, 1);
+        }).toThrow();
+    });
+
+    it("fail on out of upper range index", function () {
+        expect(function () {
+            fs.moveBusStopDown(0, 2);
+        }).toThrow();
+    });
+});
