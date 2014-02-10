@@ -94,6 +94,16 @@ function FSEditor(fareStageList, busStopList) {
         ThrowIf.invalidArrayIndex(this.Service(), index, "Index is out of range or undefined");
 
         this.Service.splice(index, 1);
+        if (this.Service().length === 0) {
+            this.ActiveFareStageIndex(null);
+        } else {
+            var activeFareStageIndex = this.ActiveFareStageIndex();
+
+            if (activeFareStageIndex < this.Service().length)
+                this.setActiveFareStage(activeFareStageIndex);
+            else
+                this.setActiveFareStage(activeFareStageIndex - 1);
+        }
     };
 
     // Returns true if fare stage at specified index could be moved one position up.

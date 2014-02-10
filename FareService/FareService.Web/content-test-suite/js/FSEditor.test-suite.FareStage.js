@@ -40,13 +40,16 @@
 
 describe("Removing fare stage must", function () {
     var tdgen = FSTestData.generalSuite;
-    var fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+    var fs;
 
-    fs.addFareStage(tdgen.fareStageList[0].Id);
-    fs.addFareStage(tdgen.fareStageList[0].Id);
-    fs.addFareStage(tdgen.fareStageList[1].Id);
-    fs.addFareStage(tdgen.fareStageList[0].Id);
-    fs.addFareStage(tdgen.fareStageList[1].Id);
+    beforeEach(function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addFareStage(tdgen.fareStageList[1].Id);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addFareStage(tdgen.fareStageList[1].Id);
+    });
 
     it("work correctly", function () {
         var prevLength = fs.Service().length;
@@ -68,6 +71,42 @@ describe("Removing fare stage must", function () {
 
     it("fail for too large index", function () {
         expect(function () { fs.removeFareStageAt(fs.Service().length); }).toThrow();
+    });
+
+    it("set another active fare stage on removing active", function () {
+        fs.setActiveFareStage(2);
+        fs.removeFareStageAt(2);
+
+        expect(fs.Service()[2].IsActive()).toBe(true);
+    });
+
+    it("set active fare stage index to null on removing last fare stage", function() {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+
+        fs.removeFareStageAt(0);
+        expect(fs.ActiveFareStageIndex()).toBe(null);
+    });
+
+    it("set active fare stage index to null on removing last fare stage", function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+
+        fs.removeFareStageAt(0);
+        expect(fs.ActiveFareStageIndex()).toBe(null);
+    });
+
+    it("set active fare stage index to previous on removing last active fare stage", function () {
+        fs = new FSEditor(tdgen.fareStageList, tdgen.busStopList);
+        fs.addFareStage(tdgen.fareStageList[1].Id);
+        fs.addFareStage(tdgen.fareStageList[0].Id);
+        fs.addFareStage(tdgen.fareStageList[1].Id);
+
+        fs.setActiveFareStage(2);
+        fs.removeFareStageAt(2);
+
+        expect(fs.ActiveFareStageIndex()).toBe(1);
+        expect(fs.Service()[1].IsActive()).toBe(true);
     });
 });
 
@@ -247,7 +286,7 @@ describe("Fare stage extending", function () {
         expect(fs.canExtendFareStage(0)).toBe(false);
     });
 
-    it("must works correctly", function() {
+    it("must works correctly", function () {
         fs.addFareStage(stage1.Id);
         fs.addBusStopToFareStageAt(0, stop1.Id);
         fs.addBusStopToFareStageAt(0, stop2.Id);
