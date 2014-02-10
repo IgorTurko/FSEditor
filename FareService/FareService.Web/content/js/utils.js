@@ -13,6 +13,12 @@
         if (index < 0 || index >= array.length)
             throw message || "Index is out of range or undefined";
     },
+    invalidArrayInsertionIndex: function (array, index, message) {
+        ThrowIf.nullOrUndefined(array, message);
+        ThrowIf.nullOrUndefined(index, message);
+        if (index < 0 || index > array.length)
+            throw message || "Insertion index is out of range or undefined";
+    },
     true: function (condition, message) {
         if (condition)
             throw message || "Operation is not valid due current state.";

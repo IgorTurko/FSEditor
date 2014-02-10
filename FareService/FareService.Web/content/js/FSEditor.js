@@ -83,7 +83,7 @@ function FSEditor(fareStageList, busStopList) {
                 break;
             }
         }
-        
+
         this.Service.push(model);
         if (this.Service().length == 1)
             this.setActiveFareStage(0);
@@ -132,6 +132,51 @@ function FSEditor(fareStageList, busStopList) {
         this.Service()[fareStageIndex].IsActive(true);
         this.ActiveFareStageIndex(fareStageIndex);
     };
+
+    // Indicates whether bounds of the fare stage at specified index can be extended by one item
+    // by moving first bus stop of the next element to last of the fare stage at specified index.
+    FSEditor.prototype.canExtendFareStage = function (fareStageIndex) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare stage index is not valid.");
+        if (fareStageIndex == this.Service().length - 1)
+            return false;
+        var nextFareStage = this.Service()[fareStageIndex + 1];
+        return nextFareStage.Stops().length > 0;
+    };
+
+    // Extends bounds of the specified fare stage 
+    // by moving fist bus stop of the next fare stage at the end of the specified fare stage.
+    FSEditor.prototype.extendFareStage = function (fareStageIndex) {
+        ThrowIf.false(this.canExtendFareStage(fareStageIndex), "Fare stage at specified index can't be extended.");
+        var nextFareStage = this.Service()[fareStageIndex + 1];
+        var firstBusStopOfNext = nextFareStage.Stops()[0];
+
+        this.removeBusStopFromFareStageAt(fareStageIndex + 1, 0);
+        this.addBusStopToFareStageAt(fareStageIndex, firstBusStopOfNext.Id);
+    };
+
+    // Indicates whether bounds of the fare stage at specified index can be collapsed by one item
+    // by moving last bus stop at first position of the next fare stage.
+    FSEditor.prototype.canCollapseFareStage = function (fareStageIndex) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare stage index not valid.");
+        if (fareStageIndex == this.Service().length - 1)
+            return false;
+        var thisFareStage = this.Service()[fareStageIndex];
+        return thisFareStage.Stops().length > 0;
+    };
+
+    // Collapse bounds of the specified fare stage 
+    // by moving bus stop at the end of the fare stage to begin
+    // of next fare stage.
+    FSEditor.prototype.collapseFareStage = function (fareStageIndex) {
+        ThrowIf.false(this.canCollapseFareStage(fareStageIndex), "Fare stage at specified index can't be collapsed.");
+
+        var currentFareStage = this.Service()[fareStageIndex];
+        var lastBusStopIndex = currentFareStage.Stops().length - 1;
+        var lastBusStop = currentFareStage.Stops()[lastBusStopIndex];
+
+        this.removeBusStopFromFareStageAt(fareStageIndex, lastBusStopIndex);
+        this.insertBusStopToFareStage(fareStageIndex, 0, lastBusStop.Id);
+    };
 })();
 
 // Bus stop methods
@@ -141,6 +186,16 @@ function FSEditor(fareStageList, busStopList) {
         ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare Stage index is out of range or undefined");
 
         var fareStage = this.Service()[fareStageIndex];
+        this.insertBusStopToFareStage(fareStageIndex, fareStage.Stops().length, busStopId);
+    };
+
+    // Adds Bus Stop at the end of stops of Fare Stage at specified index.
+    FSEditor.prototype.insertBusStopToFareStage = function (fareStageIndex, busStopIndex, busStopId) {
+        ThrowIf.invalidArrayIndex(this.Service(), fareStageIndex, "Fare Stage index is out of range or undefined");
+        var fareStage = this.Service()[fareStageIndex];
+
+        ThrowIf.invalidArrayInsertionIndex(fareStage.Stops(), busStopIndex, "Bus stop can't be inserted at specified index");
+
         var busStop = this.findBusStop(busStopId);
         var busStopModel = new this.BusStopModel(busStop);
 
@@ -152,7 +207,7 @@ function FSEditor(fareStageList, busStopList) {
                 break;
             }
         }
-        fareStage.Stops.push(busStopModel);
+        fareStage.Stops.splice(busStopIndex, 0, busStopModel);
     };
 
     // Removes Bus Stop at specified index from Fare Stage at specified index.
