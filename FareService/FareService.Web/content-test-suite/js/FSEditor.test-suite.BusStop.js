@@ -89,6 +89,13 @@ describe("Removing Bus Stop from Fare Stage must", function () {
         expect(fs.Service()[0].Stops()[1].Id).toBe(firstStop.Id);
     });
 
+    it("work correctly for last index", function () {
+        fs.removeBusStopFromFareStageAt(0, 2);
+        expect(fs.Service()[0].Stops().length).toBe(2);
+        expect(fs.Service()[0].Stops()[0].Id).toBe(firstStop.Id);
+        expect(fs.Service()[0].Stops()[1].Id).toBe(secondStop.Id);
+    });
+
     it("throw on incorrect Fare Stage index", function () {
         expect(function () {
             fs.removeBusStopFromFareStageAt(1, 1);

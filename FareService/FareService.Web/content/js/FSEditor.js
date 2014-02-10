@@ -175,7 +175,7 @@ function FSEditor(fareStageList, busStopList) {
         var lastBusStop = currentFareStage.Stops()[lastBusStopIndex];
 
         this.removeBusStopFromFareStageAt(fareStageIndex, lastBusStopIndex);
-        this.insertBusStopToFareStage(fareStageIndex, 0, lastBusStop.Id);
+        this.insertBusStopToFareStage(fareStageIndex + 1, 0, lastBusStop.Id);
     };
 })();
 

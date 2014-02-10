@@ -71,7 +71,6 @@ describe("Removing fare stage must", function () {
     });
 });
 
-
 describe("Moving Up Fare Stage must", function () {
     var tdgen = FSTestData.generalSuite;
     var fs;
@@ -167,12 +166,6 @@ describe("Fare stage activation must", function () {
         expect(fs.Service().length).toBe(1);
         expect(fs.Service()[0].IsActive()).toBe(true);
         expect(fs.ActiveFareStageIndex()).toBe(0);
-
-
-        //fs.addFareStage(second.Id);
-        //expect(fs.Service()[0].IsActive()).toBe(true);
-        //expect(fs.ActiveFareStageIndex()).toBe(0);
-        //expect(fs.Service()[1].IsActive()).toBe(false);
     });
 
     it("not be reset on adding fare stages", function () {
@@ -260,16 +253,19 @@ describe("Fare stage extending", function () {
         fs.addBusStopToFareStageAt(0, stop2.Id);
 
         fs.addFareStage(stage2.Id);
+        fs.addBusStopToFareStageAt(1, stop2.Id);
         fs.addBusStopToFareStageAt(1, stop1.Id);
 
         fs.extendFareStage(0);
 
         expect(fs.Service()[0].Stops().length).toBe(3);
-        expect(fs.Service()[1].Stops().length).toBe(0);
+        expect(fs.Service()[1].Stops().length).toBe(1);
 
         expect(fs.Service()[0].Stops()[0].Id).toBe(stop1.Id);
         expect(fs.Service()[0].Stops()[1].Id).toBe(stop2.Id);
-        expect(fs.Service()[0].Stops()[2].Id).toBe(stop1.Id);
+        expect(fs.Service()[0].Stops()[2].Id).toBe(stop2.Id);
+
+        expect(fs.Service()[1].Stops()[0].Id).toBe(stop1.Id);
     });
 });
 
@@ -323,5 +319,26 @@ describe("Fare stage collapsing", function () {
         fs.addBusStopToFareStageAt(1, stop1.Id);
 
         expect(fs.canCollapseFareStage(0)).toBe(false);
+    });
+
+    it("must works correctly", function () {
+        fs.addFareStage(stage1.Id);
+        fs.addBusStopToFareStageAt(0, stop1.Id);
+        fs.addBusStopToFareStageAt(0, stop2.Id);
+
+        fs.addFareStage(stage2.Id);
+        fs.addBusStopToFareStageAt(1, stop2.Id);
+        fs.addBusStopToFareStageAt(1, stop1.Id);
+
+        fs.collapseFareStage(0);
+
+        expect(fs.Service()[0].Stops().length).toBe(1);
+        expect(fs.Service()[1].Stops().length).toBe(3);
+
+        expect(fs.Service()[0].Stops()[0].Id).toBe(stop1.Id);
+
+        expect(fs.Service()[1].Stops()[0].Id).toBe(stop2.Id);
+        expect(fs.Service()[1].Stops()[1].Id).toBe(stop2.Id);
+        expect(fs.Service()[1].Stops()[2].Id).toBe(stop1.Id);
     });
 });
