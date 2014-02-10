@@ -29,6 +29,8 @@
                         (<select data-bind="value: Direction, options: $root.Directions"></select>)
                     </li>
                 </ul>
+                <a href="#" data-bind="visible: $root.canExtendFareStage($index()), click: function () { $root.extendFareStage($index()); }">Extend</a>
+                <a href="#" data-bind="visible: $root.canCollapseFareStage($index()), click: function () { $root.collapseFareStage($index()); }">Collapse</a>
             </li>
         </ul>
     </div>
