@@ -71,6 +71,7 @@
     <Content Include="content\css\site.css" />
     <Content Include="content\js\FSEditor.sample-data.js" />
     <Content Include="content\js\FSEditor.js" />
+    <Content Include="content\js\knockoutjs.custom-bindings.js" />
     <Content Include="content\js\utils.js" />
     <Content Include="index.html" />
     <Content Include="Readme.txt" />
