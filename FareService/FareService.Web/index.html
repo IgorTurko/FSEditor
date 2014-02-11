@@ -6,6 +6,7 @@
 
     <script type="text/javascript" src="content/components/jquery/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="content/components/knockoutjs/knockoutjs-3.0.0.js"></script>
+    <script type="text/javascript" src="content/js/knockoutjs.custom-bindings.js"></script>
 
     <script type="text/javascript" src="content/js/utils.js"></script>
     <script type="text/javascript" src="content/js/FSEditor.js"></script>
@@ -13,7 +14,13 @@
 
     <script type="text/javascript" src="content/js/FSEditor.sample-data.js"></script>
 </head>
-<body>
+<body data-bind="shortcut: [
+    { keyCombination: 'Alt+1', handler: function () { $root.moveActiveFareStageUp(); } },
+    { keyCombination: 'Alt+2', handler: function () { $root.moveActiveFareStageDown(); } },
+    { keyCombination: 'Alt+3', handler: function () { $root.collapseActiveFareStage(); } },
+    { keyCombination: 'Alt+4', handler: function () { $root.extendActiveFareStage(); } },
+    ]"
+    >
     <div id="fs-editor-root">
         <div>
             <select data-bind="options: FareStageList, optionsText: 'Title', optionsValue: 'Id', value: SelectedFareStage, optionsCaption: 'Typeahead drop down list of FS'"></select>
@@ -22,7 +29,7 @@
         <div>
             <select data-bind="options: BusStopList, optionsText: 'Title', optionsValue: 'Id', value: SelectedBusStop, optionsCaption: 'Typeahead drop down list of BS'"></select>
             <a href="#" data-bind="click: function(){ $root.addBusStopToFareStageAt($root.ActiveFareStageIndex(), $root.SelectedBusStop()); }">Add Bus Stop</a>
-        </div>        
+        </div>
         <ul data-bind="foreach: Service">
             <li data-bind="css: { 'active-fare-stage-ref': IsActive(), 'active-fare-stage': $index() == $root.ActiveFareStageIndex() }, click: function () { $root.setActiveFareStage($index()) }">
                 <a href="#" data-bind="click: function () { $root.removeFareStageAt($index()); }">del</a>
@@ -46,7 +53,7 @@
     <script type="text/javascript">
         $(function () {
             var fsEditor = CreateSampleFSEditor();
-            ko.applyBindings(fsEditor, document.getElementById("fs-editor-root"));
+            ko.applyBindings(fsEditor);
         });
     </script>
 </body>

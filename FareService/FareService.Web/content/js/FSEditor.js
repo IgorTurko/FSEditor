@@ -121,6 +121,17 @@ function FSEditor(fareStageList, busStopList) {
         var elemToMove = this.Service()[fareStageIndex];
         this.Service.splice(fareStageIndex, 1);
         this.Service.splice(fareStageIndex - 1, 0, elemToMove);
+
+        this.setActiveFareStage(fareStageIndex - 1);
+    };
+
+    FSEditor.prototype.moveActiveFareStageUp = function() {
+        var currentFareStageIndex = this.ActiveFareStageIndex();
+        if (currentFareStageIndex == null)
+            return;
+
+        if (this.canMoveFareStageUp(currentFareStageIndex))
+            this.moveFareStageUp(currentFareStageIndex);
     };
 
     // Returns true if fare stage at specified index could be moved one position down.
@@ -136,6 +147,17 @@ function FSEditor(fareStageList, busStopList) {
         var elemToMove = this.Service()[fareStageIndex];
         this.Service.splice(fareStageIndex, 1);
         this.Service.splice(fareStageIndex + 1, 0, elemToMove);
+
+        this.setActiveFareStage(fareStageIndex + 1);
+    };
+
+    FSEditor.prototype.moveActiveFareStageDown = function () {
+        var currentFareStageIndex = this.ActiveFareStageIndex();
+        if (currentFareStageIndex == null)
+            return;
+
+        if (this.canMoveFareStageDown(currentFareStageIndex))
+            this.moveFareStageDown(currentFareStageIndex);
     };
 
     FSEditor.prototype.setActiveFareStage = function (fareStageIndex) {
@@ -166,6 +188,15 @@ function FSEditor(fareStageList, busStopList) {
         this.addBusStopToFareStageAt(fareStageIndex, firstBusStopOfNext.Id);
     };
 
+    FSEditor.prototype.extendActiveFareStage = function() {
+        var currentFareStageIndex = this.ActiveFareStageIndex();
+        if (currentFareStageIndex == null)
+            return;
+
+        if (this.canExtendFareStage(currentFareStageIndex))
+            this.extendFareStage(currentFareStageIndex);
+    };
+
     // Indicates whether bounds of the fare stage at specified index can be collapsed by one item
     // by moving last bus stop at first position of the next fare stage.
     FSEditor.prototype.canCollapseFareStage = function (fareStageIndex) {
@@ -188,6 +219,15 @@ function FSEditor(fareStageList, busStopList) {
 
         this.removeBusStopFromFareStageAt(fareStageIndex, lastBusStopIndex);
         this.insertBusStopToFareStage(fareStageIndex + 1, 0, lastBusStop.Id);
+    };
+
+    FSEditor.prototype.collapseActiveFareStage = function () {
+        var currentFareStageIndex = this.ActiveFareStageIndex();
+        if (currentFareStageIndex == null)
+            return;
+
+        if (this.canCollapseFareStage(currentFareStageIndex))
+            this.collapseFareStage(currentFareStageIndex);
     };
 })();
 
