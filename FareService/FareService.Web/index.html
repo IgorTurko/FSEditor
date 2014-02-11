@@ -9,11 +9,20 @@
 
     <script type="text/javascript" src="content/js/utils.js"></script>
     <script type="text/javascript" src="content/js/FSEditor.js"></script>
+    <script type="text/javascript" src="content/js/controls.js"></script>
 
     <script type="text/javascript" src="content/js/FSEditor.sample-data.js"></script>
 </head>
 <body>
     <div id="fs-editor-root">
+        <div>
+            <select data-bind="options: FareStageList, optionsText: 'Title', optionsValue: 'Id', value: SelectedFareStage, optionsCaption: 'Typeahead drop down list of FS'"></select>
+            <a href="#" data-bind="click: function(){ $root.addFareStage($root.SelectedFareStage()); }">Add Fare Stage</a>
+        </div>
+        <div>
+            <select data-bind="options: BusStopList, optionsText: 'Title', optionsValue: 'Id', value: SelectedBusStop, optionsCaption: 'Typeahead drop down list of BS'"></select>
+            <a href="#" data-bind="click: function(){ $root.addBusStopToFareStageAt($root.ActiveFareStageIndex(), $root.SelectedBusStop()); }">Add Bus Stop</a>
+        </div>        
         <ul data-bind="foreach: Service">
             <li data-bind="css: { 'active-fare-stage-ref': IsActive(), 'active-fare-stage': $index() == $root.ActiveFareStageIndex() }, click: function () { $root.setActiveFareStage($index()) }">
                 <a href="#" data-bind="click: function () { $root.removeFareStageAt($index()); }">del</a>

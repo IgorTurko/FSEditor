@@ -19,6 +19,8 @@ function FSEditor(fareStageList, busStopList) {
 
     this.Service = ko.observableArray([]);
     this.ActiveFareStageIndex = ko.observable(null);
+    this.SelectedFareStage = ko.observable(null);
+    this.SelectedBusStop = ko.observable(null);
 };
 
 // Constructors and internal methods.
